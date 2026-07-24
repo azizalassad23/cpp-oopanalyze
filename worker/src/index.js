@@ -1,6 +1,6 @@
 import { MATERI } from '../../src/data/materi.js'
 import { headerCors, balasJson, balasGalat } from './cors.js'
-import { pakaiKuota, lihatKuota } from './kuota.js'
+import { periksaKuota, naikkanKuota, lihatKuota } from './kuota.js'
 import { mintaJson, GalatGemini } from './gemini.js'
 import { skemaAnalisa, SKEMA_SOAL } from './skema.js'
 import {
@@ -59,8 +59,10 @@ function samaAman(a = '', b = '') {
  * @returns {{galat?: Response, clientId?: string}}
  */
 function periksaAkses(request, env, cors) {
-  const kode = request.headers.get('X-Kode-Akses') || ''
-  if (!samaAman(kode, env.KODE_AKSES || '')) {
+  // Dirapikan di kedua sisi: nilai secret sering membawa spasi atau baris baru
+  // yang tak terlihat saat ditempel dari clipboard atau disalurkan lewat pipa.
+  const kode = (request.headers.get('X-Kode-Akses') || '').trim()
+  if (!samaAman(kode, (env.KODE_AKSES || '').trim())) {
     return {
       galat: balasGalat('kode_salah', 'Kode akses kelas salah. Tanyakan lagi ke gurumu.', {
         status: 401,
@@ -131,9 +133,9 @@ async function tanganiAnalisa(request, env, cors) {
   const stdin = String(badan.stdin || '').slice(0, MAKS_PANJANG_STDIN)
   const hasilEksekusi = bersihkanHasilEksekusi(badan.hasilEksekusi)
 
-  const kuota = await pakaiKuota(env, clientId)
-  if (!kuota.boleh) {
-    return balasGalat('kuota_habis', kuota.alasan, { status: 429, cors, kuota })
+  const jatah = await periksaKuota(env, clientId)
+  if (!jatah.boleh) {
+    return balasGalat('kuota_habis', jatah.alasan, { status: 429, cors, kuota: jatah })
   }
 
   const hasil = await mintaJson(env, {
@@ -143,7 +145,8 @@ async function tanganiAnalisa(request, env, cors) {
     suhu: 0.2,
   })
 
-  return balasJson({ ok: true, mode, hasil, kuota: { sisa: kuota.sisa, batas: kuota.batas } }, { cors })
+  const kuota = await naikkanKuota(env, clientId)
+  return balasJson({ ok: true, mode, hasil, kuota }, { cors })
 }
 
 async function tanganiSoal(request, env, cors) {
@@ -162,9 +165,9 @@ async function tanganiSoal(request, env, cors) {
   }
   const tingkat = TINGKAT.includes(badan.tingkat) ? badan.tingkat : 'sedang'
 
-  const kuota = await pakaiKuota(env, clientId)
-  if (!kuota.boleh) {
-    return balasGalat('kuota_habis', kuota.alasan, { status: 429, cors, kuota })
+  const jatah = await periksaKuota(env, clientId)
+  if (!jatah.boleh) {
+    return balasGalat('kuota_habis', jatah.alasan, { status: 429, cors, kuota: jatah })
   }
 
   const hasil = await mintaJson(env, {
@@ -175,12 +178,9 @@ async function tanganiSoal(request, env, cors) {
     suhu: 0.9,
   })
 
+  const kuota = await naikkanKuota(env, clientId)
   return balasJson(
-    {
-      ok: true,
-      hasil: { ...hasil, materiId: badan.materiId, tingkat },
-      kuota: { sisa: kuota.sisa, batas: kuota.batas },
-    },
+    { ok: true, hasil: { ...hasil, materiId: badan.materiId, tingkat }, kuota },
     { cors },
   )
 }

@@ -32,20 +32,22 @@ async function tambah(env, kunci, sekarang) {
 }
 
 /**
- * Memeriksa sekaligus menaikkan penghitung.
+ * Memeriksa apakah masih ada jatah, TANPA menguranginya.
+ *
+ * Pemeriksaan dan pengurangan sengaja dipisah supaya jatah murid hanya
+ * berkurang bila Gemini benar-benar menjawab. Kalau server Gemini sedang
+ * bermasalah, murid tidak ikut dirugikan.
+ *
  * @returns {{boleh: boolean, alasan?: string, sisa: number, batas: number}}
  */
-export async function pakaiKuota(env, clientId) {
+export async function periksaKuota(env, clientId) {
   const hari = tanggalHariIni()
   const batasMurid = parseInt(env.BATAS_HARIAN_MURID, 10) || 30
   const batasTotal = parseInt(env.BATAS_HARIAN_TOTAL, 10) || 400
 
-  const kunciMurid = `kuota:${hari}:${clientId}`
-  const kunciTotal = `kuota:${hari}:__total__`
-
   const [pakaiMurid, pakaiTotal] = await Promise.all([
-    baca(env, kunciMurid),
-    baca(env, kunciTotal),
+    baca(env, `kuota:${hari}:${clientId}`),
+    baca(env, `kuota:${hari}:__total__`),
   ])
 
   if (pakaiMurid >= batasMurid) {
@@ -66,12 +68,28 @@ export async function pakaiKuota(env, clientId) {
     }
   }
 
+  return { boleh: true, sisa: batasMurid - pakaiMurid, batas: batasMurid }
+}
+
+/** Mengurangi jatah. Dipanggil hanya setelah permintaan berhasil dilayani. */
+export async function naikkanKuota(env, clientId) {
+  const hari = tanggalHariIni()
+  const batasMurid = parseInt(env.BATAS_HARIAN_MURID, 10) || 30
+
+  const kunciMurid = `kuota:${hari}:${clientId}`
+  const kunciTotal = `kuota:${hari}:__total__`
+
+  const [pakaiMurid, pakaiTotal] = await Promise.all([
+    baca(env, kunciMurid),
+    baca(env, kunciTotal),
+  ])
+
   await Promise.all([
     tambah(env, kunciMurid, pakaiMurid),
     tambah(env, kunciTotal, pakaiTotal),
   ])
 
-  return { boleh: true, sisa: batasMurid - pakaiMurid - 1, batas: batasMurid }
+  return { sisa: Math.max(0, batasMurid - pakaiMurid - 1), batas: batasMurid }
 }
 
 /** Melihat sisa kuota tanpa menguranginya. */

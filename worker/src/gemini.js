@@ -6,6 +6,15 @@ const BASIS = 'https://generativelanguage.googleapis.com/v1beta/models'
  * format tulisan bebas yang berubah-ubah tiap panggilan.
  */
 export async function mintaJson(env, { sistem, perintah, skema, suhu = 0.3 }) {
+  // Diperiksa lebih dulu agar pesannya jelas. Tanpa ini, Gemini hanya membalas
+  // "400 Bad Request" yang membingungkan dan menyesatkan murid.
+  if (!env.GEMINI_API_KEY) {
+    throw new GalatGemini(
+      0,
+      'GEMINI_API_KEY belum dipasang. Jalankan: npx wrangler secret put GEMINI_API_KEY',
+    )
+  }
+
   const model = env.GEMINI_MODEL || 'gemini-2.5-flash'
 
   const respons = await fetch(`${BASIS}/${model}:generateContent`, {
@@ -56,6 +65,9 @@ export class GalatGemini extends Error {
 
   /** Pesan yang aman dan mudah dimengerti untuk ditampilkan ke murid. */
   pesanUntukMurid() {
+    if (this.status === 0) {
+      return 'Server belum selesai disiapkan gurumu (kunci Gemini belum dipasang). Laporkan pesan ini ke gurumu.'
+    }
     if (this.status === 429) {
       return 'Server Gemini sedang sibuk atau kuota harian habis. Tunggu sebentar lalu coba lagi.'
     }
