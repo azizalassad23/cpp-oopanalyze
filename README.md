@@ -49,7 +49,7 @@ Sekali saja di awal: buka **Settings → Pages** pada repo, lalu setel
 - [x] Tahap 1 — Fondasi: layout, editor C++, deploy otomatis
 - [x] Tahap 2 — Cloudflare Worker sebagai proxy Gemini
 - [x] Tahap 3 — Eksekusi kode C++ via Wandbox
-- [ ] Tahap 4 — Analisa kode berrubrik per materi
+- [x] Tahap 4 — Analisa kode berrubrik per materi
 - [ ] Tahap 5 — Bank soal dan generate soal
 
 ## Catatan teknis
