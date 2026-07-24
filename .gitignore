@@ -5,6 +5,7 @@ dist-ssr
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+.claude/settings.local.json
 .env
 .env.*
 !.env.example
