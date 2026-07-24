@@ -31,9 +31,26 @@ npx wrangler kv namespace create KUOTA
 ```
 
 Perintah di atas mencetak sebuah `id`. Buka [wrangler.toml](wrangler.toml), lalu
-ganti `GANTI_DENGAN_ID_KV_ANDA` dengan id tersebut.
+tempel id tersebut pada baris `id = "..."` di bagian `[[kv_namespaces]]`.
 
-### 4. Simpan dua rahasia
+### 4. Terbitkan Worker
+
+```bash
+npx wrangler deploy
+```
+
+Cloudflare akan mencetak alamat seperti
+`https://cpp-oopanalyze-api.namaanda.workers.dev`.
+
+> **Urutannya penting.** Deploy harus dilakukan SEBELUM menyimpan rahasia,
+> karena `wrangler secret put` menaruh rahasia ke Worker yang sudah ada di
+> Cloudflare. Bila Worker-nya belum pernah diterbitkan, perintah itu gagal
+> dengan pesan bahwa Worker tidak ditemukan.
+
+Pada tahap ini Worker sudah hidup tetapi belum bisa dipakai — wajar, karena
+rahasianya belum diisi. Lanjut ke langkah berikutnya.
+
+### 5. Simpan dua rahasia
 
 ```bash
 npx wrangler secret put GEMINI_API_KEY
@@ -45,16 +62,8 @@ Tempel kunci Gemini saat diminta, lalu tekan Enter. Ulangi untuk kode kelas:
 npx wrangler secret put KODE_AKSES
 ```
 
-Isi dengan kode akses kelas Anda.
-
-### 5. Terbitkan
-
-```bash
-npx wrangler deploy
-```
-
-Cloudflare akan mencetak alamat seperti
-`https://cpp-oopanalyze-api.namaanda.workers.dev`.
+Isi dengan kode akses kelas Anda. Rahasia langsung berlaku tanpa perlu deploy
+ulang.
 
 **Salin alamat itu ke [../src/config.js](../src/config.js)**, lalu commit dan
 push agar halaman web tahu ke mana harus mengirim permintaan.

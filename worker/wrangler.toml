@@ -11,11 +11,10 @@ BATAS_HARIAN_TOTAL = "400"
 ASAL_DIIZINKAN = "https://azizalassad23.github.io,http://localhost:5173"
 
 # Penyimpanan penghitung kuota harian.
-# Jalankan: npx wrangler kv namespace create KUOTA
-# lalu tempel id yang muncul ke baris di bawah ini.
+# Dibuat dengan: npx wrangler kv namespace create KUOTA
 [[kv_namespaces]]
 binding = "KUOTA"
-id = "GANTI_DENGAN_ID_KV_ANDA"
+id = "e94ea3f6ae4c4db9b4c7305726ab2eaf"
 
 # CATATAN: GEMINI_API_KEY dan KODE_AKSES TIDAK ditulis di berkas ini.
 # Keduanya disimpan sebagai secret:
