@@ -1,4 +1,8 @@
+import { useState } from 'react'
+import SoalView from '../components/SoalView.jsx'
 import { MATERI, TINGKAT } from '../data/materi.js'
+import BANK_SOAL from '../data/bank-soal.json'
+import { buatSoal, GalatApi } from '../lib/api.js'
 
 const WARNA = {
   violet: 'bg-violet-50 text-violet-700 ring-violet-100',
@@ -9,58 +13,151 @@ const WARNA = {
   cyan: 'bg-cyan-50 text-cyan-700 ring-cyan-100',
 }
 
-export default function ProblemsPage() {
+const WARNA_TINGKAT = {
+  mudah: 'bg-emerald-100 text-emerald-700',
+  sedang: 'bg-amber-100 text-amber-700',
+  sulit: 'bg-rose-100 text-rose-700',
+}
+
+export default function ProblemsPage({ onKuotaBerubah, onKerjakan }) {
+  const [materiId, setMateriId] = useState(MATERI[0].id)
+  const [tingkat, setTingkat] = useState('mudah')
+  const [dibuka, setDibuka] = useState(null) // { soal, dibuatAI }
+  const [membuat, setMembuat] = useState(false)
+  const [galat, setGalat] = useState('')
+
+  const materi = MATERI.find((m) => m.id === materiId)
+  const soalTerpilih = BANK_SOAL.filter((s) => s.materiId === materiId && s.tingkat === tingkat)
+
+  async function tekanBuatSoal() {
+    setMembuat(true)
+    setGalat('')
+    try {
+      const data = await buatSoal({ materiId, tingkat })
+      setDibuka({ soal: data.hasil, dibuatAI: true })
+      onKuotaBerubah?.(data.kuota)
+    } catch (e) {
+      setGalat(e instanceof GalatApi ? e.message : 'Gagal membuat soal. Coba lagi.')
+      if (e.kuota) onKuotaBerubah?.(e.kuota)
+    } finally {
+      setMembuat(false)
+    }
+  }
+
+  if (dibuka) {
+    return (
+      <div className="mx-auto max-w-3xl">
+        <SoalView
+          soal={dibuka.soal}
+          dibuatAI={dibuka.dibuatAI}
+          onKembali={() => setDibuka(null)}
+          onKerjakan={onKerjakan}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <h2 className="text-lg font-semibold text-slate-900">Pilih materi latihan</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Latihan soal</h2>
         <p className="mt-1 text-sm text-slate-500">
-          Setiap materi berisi soal bertingkat: {TINGKAT.map((t) => t.nama).join(', ')}.
+          Pilih materi dan tingkat kesulitan, lalu kerjakan soalnya di editor.
         </p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {MATERI.map((m) => (
-          <article
-            key={m.id}
-            className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4"
-          >
-            <div className="flex items-start gap-3">
-              <span
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-lg ring-1 ${WARNA[m.warna]}`}
-                aria-hidden="true"
-              >
-                {m.ikon}
-              </span>
-              <div className="min-w-0">
-                <h3 className="text-sm font-semibold text-slate-900">{m.nama}</h3>
-                <p className="mt-0.5 text-xs leading-snug text-slate-500">{m.ringkas}</p>
-              </div>
-            </div>
-
-            <ul className="flex flex-wrap gap-1.5">
-              {m.subtopik.map((s) => (
-                <li
-                  key={s}
-                  className="rounded-md bg-slate-100 px-2 py-1 text-[11px] text-slate-600"
-                >
-                  {s}
-                </li>
-              ))}
-            </ul>
-
+      {/* Pemilih materi */}
+      <div className="flex flex-wrap gap-2">
+        {MATERI.map((m) => {
+          const aktif = m.id === materiId
+          return (
             <button
-              disabled
-              className="mt-auto rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 transition hover:border-indigo-300 hover:text-indigo-700 disabled:cursor-not-allowed disabled:opacity-40"
+              key={m.id}
+              onClick={() => setMateriId(m.id)}
+              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium ring-1 transition ${
+                aktif ? WARNA[m.warna] : 'bg-white text-slate-600 ring-slate-200 hover:ring-slate-300'
+              }`}
             >
-              Lihat soal
+              <span aria-hidden="true">{m.ikon}</span>
+              {m.nama}
             </button>
-          </article>
-        ))}
+          )
+        })}
       </div>
 
-      <p className="rounded-lg bg-amber-50 px-4 py-3 text-xs text-amber-800">
-        Bank soal dan tombol <b>Buat soal baru</b> akan diisi pada Tahap 5.
+      {/* Pemilih tingkat */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs text-slate-500">Tingkat:</span>
+        {TINGKAT.map((t) => {
+          const aktif = t.id === tingkat
+          return (
+            <button
+              key={t.id}
+              onClick={() => setTingkat(t.id)}
+              title={t.ringkas}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                aktif ? WARNA_TINGKAT[t.id] : 'bg-white text-slate-600 ring-1 ring-slate-200'
+              }`}
+            >
+              {t.nama}
+            </button>
+          )
+        })}
+      </div>
+
+      {materi && (
+        <p className="text-xs leading-relaxed text-slate-500">
+          <b className="text-slate-700">{materi.nama}</b> — {materi.ringkas}
+        </p>
+      )}
+
+      {galat && (
+        <p role="alert" className="rounded-lg bg-rose-50 px-4 py-3 text-xs text-rose-700">
+          {galat}
+        </p>
+      )}
+
+      {/* Daftar soal */}
+      <div className="grid gap-3 sm:grid-cols-2">
+        {soalTerpilih.map((s) => (
+          <button
+            key={s.id}
+            onClick={() => setDibuka({ soal: s, dibuatAI: false })}
+            className="flex flex-col gap-1.5 rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-indigo-300"
+          >
+            <span className="text-sm font-semibold text-slate-900">{s.judul}</span>
+            <span className="line-clamp-2 text-xs leading-relaxed text-slate-500">{s.cerita}</span>
+            <span className="mt-1 font-mono text-[11px] text-slate-400">
+              Target: {s.kompleksitasHarapan}
+            </span>
+          </button>
+        ))}
+
+        <button
+          onClick={tekanBuatSoal}
+          disabled={membuat}
+          className="flex min-h-[110px] flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-300 bg-white p-4 text-center transition hover:border-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {membuat ? (
+            <>
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600" />
+              <span className="text-xs font-medium text-slate-600">Sedang menyusun soal…</span>
+            </>
+          ) : (
+            <>
+              <span className="text-xl" aria-hidden="true">✨</span>
+              <span className="text-xs font-medium text-slate-700">Buat soal baru</span>
+              <span className="text-[11px] text-slate-400">
+                Soal segar dari AI, memakai jatah harianmu
+              </span>
+            </>
+          )}
+        </button>
+      </div>
+
+      <p className="text-[11px] leading-relaxed text-slate-400">
+        Soal pada daftar di atas sudah diperiksa gurumu dan contoh keluarannya sudah diuji dengan
+        compiler sungguhan. Soal buatan AI belum melalui pemeriksaan itu.
       </p>
     </div>
   )

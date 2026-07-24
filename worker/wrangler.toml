@@ -10,11 +10,16 @@ BATAS_HARIAN_MURID = "30"
 BATAS_HARIAN_TOTAL = "400"
 ASAL_DIIZINKAN = "https://azizalassad23.github.io,http://localhost:5173"
 
-# Penyimpanan penghitung kuota harian.
-# Dibuat dengan: npx wrangler kv namespace create KUOTA
-[[kv_namespaces]]
-binding = "KUOTA"
-id = "e94ea3f6ae4c4db9b4c7305726ab2eaf"
+# Penghitung kuota harian.
+# Memakai Durable Object, bukan KV: KV menyimpan hasil baca di cache selama
+# sekitar 60 detik sehingga permintaan beruntun tidak terhitung dengan benar.
+[[durable_objects.bindings]]
+name = "PENGHITUNG"
+class_name = "PenghitungKuota"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PenghitungKuota"]
 
 # CATATAN: GEMINI_API_KEY dan KODE_AKSES TIDAK ditulis di berkas ini.
 # Keduanya disimpan sebagai secret:

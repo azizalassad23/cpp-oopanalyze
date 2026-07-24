@@ -1,0 +1,521 @@
+[
+  {
+    "id": "rekursi-mudah",
+    "materiId": "rekursi",
+    "tingkat": "mudah",
+    "judul": "Menjumlah Angka pada Nomor Absen",
+    "cerita": "Bu Rina punya kebiasaan unik. Setiap nomor absen siswa ia jumlahkan angka-angkanya untuk menentukan kelompok piket. Nomor 4092 misalnya, ia jumlahkan menjadi 4+0+9+2.",
+    "tugas": "Hitung jumlah seluruh angka penyusun sebuah bilangan bulat, menggunakan fungsi rekursif.",
+    "formatInput": "Satu baris berisi sebuah bilangan bulat N.",
+    "formatOutput": "Satu baris berisi jumlah angka penyusun N.",
+    "batasan": ["0 <= N <= 1.000.000.000"],
+    "contoh": [
+      {
+        "input": "4092",
+        "output": "15",
+        "penjelasan": "Angka penyusunnya adalah 4, 0, 9, dan 2. Jumlahnya 4+0+9+2 = 15."
+      },
+      {
+        "input": "7",
+        "output": "7",
+        "penjelasan": "Hanya ada satu angka, jadi jumlahnya adalah angka itu sendiri."
+      }
+    ],
+    "petunjuk": [
+      "Angka paling kanan sebuah bilangan bisa diambil dengan sisa bagi 10, dan sisanya bisa diperoleh dengan bagi 10.",
+      "Kapan proses ini harus berhenti? Pikirkan keadaan ketika bilangannya sudah habis."
+    ],
+    "kompleksitasHarapan": "O(jumlah digit)"
+  },
+  {
+    "id": "rekursi-sedang",
+    "materiId": "rekursi",
+    "tingkat": "sedang",
+    "judul": "Menaiki Tangga Sekolah",
+    "cerita": "Tangga menuju lantai dua sekolah punya N anak tangga. Doni suka melompat: sekali melangkah ia bisa menaiki 1 anak tangga atau 2 anak tangga sekaligus.",
+    "tugas": "Hitung ada berapa cara berbeda bagi Doni untuk sampai di anak tangga ke-N.",
+    "formatInput": "Satu baris berisi bilangan bulat N, banyaknya anak tangga.",
+    "formatOutput": "Satu baris berisi banyaknya cara berbeda.",
+    "batasan": ["1 <= N <= 45"],
+    "contoh": [
+      {
+        "input": "4",
+        "output": "5",
+        "penjelasan": "Kelima caranya: 1+1+1+1, 1+1+2, 1+2+1, 2+1+1, dan 2+2."
+      },
+      {
+        "input": "1",
+        "output": "1",
+        "penjelasan": "Hanya ada satu cara, yaitu melangkah satu anak tangga."
+      }
+    ],
+    "petunjuk": [
+      "Untuk sampai di anak tangga ke-N, langkah terakhir Doni pasti berasal dari anak tangga ke-(N-1) atau ke-(N-2).",
+      "Coba tulis banyaknya cara untuk N = 1, 2, 3, 4, 5 lalu perhatikan polanya.",
+      "Jika N = 45 terasa sangat lambat, berarti ada perhitungan yang kamu ulang berkali-kali. Simpan hasil yang sudah pernah dihitung."
+    ],
+    "kompleksitasHarapan": "O(N) dengan memoization"
+  },
+  {
+    "id": "rekursi-sulit",
+    "materiId": "rekursi",
+    "tingkat": "sulit",
+    "judul": "Memilih Kartu Bernilai Tepat",
+    "cerita": "Pak Guru membagikan N kartu bernilai kepada Sinta. Sinta ingin memilih beberapa kartu sehingga jumlah nilainya tepat sama dengan K.",
+    "tugas": "Hitung ada berapa banyak cara memilih kartu sehingga jumlah nilainya tepat K. Dua kartu bernilai sama tetapi berbeda posisi dianggap pilihan yang berbeda.",
+    "formatInput": "Baris pertama berisi dua bilangan N dan K.\nBaris kedua berisi N bilangan, nilai tiap kartu.",
+    "formatOutput": "Satu baris berisi banyaknya cara.",
+    "batasan": ["1 <= N <= 20", "1 <= K <= 1000", "1 <= nilai kartu <= 100"],
+    "contoh": [
+      {
+        "input": "4 5\n1 2 3 4",
+        "output": "2",
+        "penjelasan": "Ada dua pilihan yang jumlahnya 5, yaitu {1,4} dan {2,3}."
+      },
+      {
+        "input": "3 4\n2 2 2",
+        "output": "3",
+        "penjelasan": "Ambil dua kartu mana pun dari tiga kartu bernilai 2. Ada 3 pasangan posisi yang berbeda."
+      }
+    ],
+    "petunjuk": [
+      "Untuk setiap kartu hanya ada dua kemungkinan: diambil, atau tidak diambil.",
+      "Buat fungsi rekursif yang menerima posisi kartu sekarang dan sisa nilai yang masih harus dikumpulkan.",
+      "Perhatikan kapan sebuah cabang dianggap berhasil, dan kapan cabang itu sudah pasti gagal."
+    ],
+    "kompleksitasHarapan": "O(2^N)"
+  },
+
+  {
+    "id": "pencarian-pengurutan-mudah",
+    "materiId": "pencarian-pengurutan",
+    "tingkat": "mudah",
+    "judul": "Merapikan Nilai Ulangan",
+    "cerita": "Setelah memeriksa ulangan, Bu Sari ingin menempel daftar nilai di papan. Agar mudah dibaca, nilainya harus urut dari yang terkecil.",
+    "tugas": "Urutkan N nilai ulangan dari kecil ke besar, lalu cetak hasilnya.",
+    "formatInput": "Baris pertama berisi bilangan N.\nBaris kedua berisi N bilangan nilai ulangan.",
+    "formatOutput": "Satu baris berisi N nilai terurut menaik, dipisah satu spasi.",
+    "batasan": ["1 <= N <= 1000", "0 <= nilai <= 100"],
+    "contoh": [
+      {
+        "input": "5\n80 45 90 45 70",
+        "output": "45 45 70 80 90",
+        "penjelasan": "Nilai 45 muncul dua kali, keduanya tetap ditulis."
+      },
+      {
+        "input": "3\n100 0 50",
+        "output": "0 50 100",
+        "penjelasan": "Diurutkan dari yang terkecil."
+      }
+    ],
+    "petunjuk": [
+      "C++ sudah menyediakan fungsi pengurutan siap pakai di pustaka algorithm.",
+      "Perhatikan agar tidak ada spasi berlebih di akhir baris keluaran."
+    ],
+    "kompleksitasHarapan": "O(N log N)"
+  },
+  {
+    "id": "pencarian-pengurutan-sedang",
+    "materiId": "pencarian-pengurutan",
+    "tingkat": "sedang",
+    "judul": "Mencari Buku di Rak Perpustakaan",
+    "cerita": "Buku di perpustakaan sekolah disusun berdasarkan nomor kode, dari kecil ke besar. Pustakawan ingin mencari sebuah buku secepat mungkin tanpa memeriksa satu per satu dari awal.",
+    "tugas": "Diberikan N kode buku yang sudah terurut menaik dan sebuah kode yang dicari, tentukan buku itu ada di urutan ke berapa.",
+    "formatInput": "Baris pertama berisi bilangan N.\nBaris kedua berisi N kode buku terurut menaik.\nBaris ketiga berisi kode buku yang dicari.",
+    "formatOutput": "Urutan buku yang dicari, dihitung mulai dari 1. Cetak -1 bila bukunya tidak ada.",
+    "batasan": ["1 <= N <= 100.000", "1 <= kode <= 1.000.000.000", "Semua kode berbeda"],
+    "contoh": [
+      {
+        "input": "6\n2 5 8 12 16 23\n12",
+        "output": "4",
+        "penjelasan": "Kode 12 berada di urutan keempat."
+      },
+      {
+        "input": "6\n2 5 8 12 16 23\n7",
+        "output": "-1",
+        "penjelasan": "Kode 7 tidak ada di dalam daftar."
+      }
+    ],
+    "petunjuk": [
+      "Karena datanya sudah terurut, kamu bisa langsung memeriksa bagian tengah lalu membuang separuh yang tidak mungkin.",
+      "Hati-hati menentukan batas kiri dan kanan agar pencarian selalu berhenti dan tidak berputar selamanya."
+    ],
+    "kompleksitasHarapan": "O(log N)"
+  },
+  {
+    "id": "pencarian-pengurutan-sulit",
+    "materiId": "pencarian-pengurutan",
+    "tingkat": "sulit",
+    "judul": "Peringkat Kelas",
+    "cerita": "Wali kelas menyusun peringkat. Siswa dengan nilai lebih tinggi berada di atas. Jika nilainya sama, yang namanya lebih dahulu secara alfabet ditulis lebih atas.",
+    "tugas": "Urutkan data siswa sesuai aturan di atas, lalu cetak nama dan nilainya.",
+    "formatInput": "Baris pertama berisi bilangan N.\nN baris berikutnya masing-masing berisi sebuah nama tanpa spasi dan sebuah nilai.",
+    "formatOutput": "N baris, masing-masing berisi nama dan nilai dipisah satu spasi, sesuai urutan peringkat.",
+    "batasan": ["1 <= N <= 1000", "0 <= nilai <= 100", "Nama hanya huruf kecil, panjang maksimal 20"],
+    "contoh": [
+      {
+        "input": "3\nbudi 80\nani 90\ncici 80",
+        "output": "ani 90\nbudi 80\ncici 80",
+        "penjelasan": "Ani tertinggi. Budi dan Cici sama-sama 80, sehingga diurutkan secara alfabet."
+      },
+      {
+        "input": "2\nzaki 70\nadit 70",
+        "output": "adit 70\nzaki 70",
+        "penjelasan": "Nilainya sama, jadi urutan ditentukan oleh nama."
+      }
+    ],
+    "petunjuk": [
+      "Simpan nama dan nilai dalam satu struktur agar keduanya ikut berpindah saat diurutkan.",
+      "Kamu perlu aturan pembanding yang memeriksa nilai lebih dulu, baru nama bila nilainya sama.",
+      "Pastikan aturan pembandingmu tidak pernah menyatakan dua data saling lebih besar."
+    ],
+    "kompleksitasHarapan": "O(N log N)"
+  },
+
+  {
+    "id": "strategi-pemecahan-mudah",
+    "materiId": "strategi-pemecahan",
+    "tingkat": "mudah",
+    "judul": "Kembalian di Kantin",
+    "cerita": "Ibu kantin ingin memberi uang kembalian dengan lembar uang sesedikit mungkin. Pecahan yang tersedia: 50000, 20000, 10000, 5000, 2000, dan 1000.",
+    "tugas": "Hitung jumlah lembar uang paling sedikit untuk membayar kembalian sebesar M rupiah.",
+    "formatInput": "Satu baris berisi bilangan M, besar kembalian. M selalu kelipatan 1000.",
+    "formatOutput": "Satu baris berisi jumlah lembar paling sedikit.",
+    "batasan": ["1000 <= M <= 10.000.000", "M kelipatan 1000"],
+    "contoh": [
+      {
+        "input": "87000",
+        "output": "5",
+        "penjelasan": "50000 + 20000 + 10000 + 5000 + 2000 memakai 5 lembar."
+      },
+      {
+        "input": "3000",
+        "output": "2",
+        "penjelasan": "2000 + 1000 memakai 2 lembar."
+      }
+    ],
+    "petunjuk": [
+      "Ambil pecahan terbesar yang masih muat, sebanyak mungkin, lalu lanjutkan ke pecahan berikutnya.",
+      "Untuk daftar pecahan ini, cara serakah tersebut memang menghasilkan jawaban terbaik."
+    ],
+    "kompleksitasHarapan": "O(banyak pecahan)"
+  },
+  {
+    "id": "strategi-pemecahan-sedang",
+    "materiId": "strategi-pemecahan",
+    "tingkat": "sedang",
+    "judul": "Jadwal Latihan Paling Padat",
+    "cerita": "Pelatih mencatat jumlah menit latihan setiap hari selama N hari. Ia ingin tahu periode K hari berturut-turut mana yang total latihannya paling banyak.",
+    "tugas": "Cari jumlah menit terbesar dari K hari berturut-turut.",
+    "formatInput": "Baris pertama berisi dua bilangan N dan K.\nBaris kedua berisi N bilangan, menit latihan tiap hari.",
+    "formatOutput": "Satu baris berisi jumlah menit terbesar.",
+    "batasan": ["1 <= K <= N <= 200.000", "0 <= menit <= 1000"],
+    "contoh": [
+      {
+        "input": "6 3\n2 1 5 1 3 2",
+        "output": "9",
+        "penjelasan": "Periode terbaik adalah hari ke-3 sampai ke-5, yaitu 5+1+3 = 9."
+      },
+      {
+        "input": "4 2\n1 1 1 1",
+        "output": "2",
+        "penjelasan": "Semua periode bernilai sama, yaitu 2."
+      }
+    ],
+    "petunjuk": [
+      "Menghitung ulang jumlah setiap periode dari nol akan terlalu lambat untuk N sebesar 200.000.",
+      "Saat jendela bergeser satu hari, hanya satu angka yang masuk dan satu angka yang keluar."
+    ],
+    "kompleksitasHarapan": "O(N)"
+  },
+  {
+    "id": "strategi-pemecahan-sulit",
+    "materiId": "strategi-pemecahan",
+    "tingkat": "sulit",
+    "judul": "Menyeberang dengan Perahu",
+    "cerita": "Rombongan study tour harus menyeberangi sungai. Setiap perahu hanya kuat mengangkut paling banyak dua orang, dan jumlah berat keduanya tidak boleh melebihi batas L.",
+    "tugas": "Hitung jumlah perahu paling sedikit yang dibutuhkan agar semua orang menyeberang.",
+    "formatInput": "Baris pertama berisi dua bilangan N dan L.\nBaris kedua berisi N bilangan, berat tiap orang.",
+    "formatOutput": "Satu baris berisi jumlah perahu paling sedikit.",
+    "batasan": ["1 <= N <= 100.000", "1 <= berat <= L <= 1000"],
+    "contoh": [
+      {
+        "input": "4 5\n3 5 3 4",
+        "output": "4",
+        "penjelasan": "Tidak ada dua orang pun yang jumlah beratnya muat dalam satu perahu, sehingga setiap orang naik perahu sendiri."
+      },
+      {
+        "input": "4 3\n1 2 2 3",
+        "output": "3",
+        "penjelasan": "Orang berberat 1 dan 2 berbagi satu perahu. Dua orang sisanya masing-masing satu perahu."
+      }
+    ],
+    "petunjuk": [
+      "Coba urutkan berat semua orang terlebih dahulu.",
+      "Pikirkan pasangan antara orang paling ringan dan orang paling berat yang tersisa.",
+      "Jika keduanya tidak muat, orang terberat itu tidak akan muat dipasangkan dengan siapa pun."
+    ],
+    "kompleksitasHarapan": "O(N log N)"
+  },
+
+  {
+    "id": "struktur-data-mudah",
+    "materiId": "struktur-data",
+    "tingkat": "mudah",
+    "judul": "Memeriksa Pasangan Kurung",
+    "cerita": "Saat belajar menulis rumus, siswa sering lupa menutup kurung. Bu Guru ingin alat kecil untuk memeriksanya.",
+    "tugas": "Periksa apakah seluruh kurung pada sebuah teks berpasangan dengan benar. Kurung yang dipakai hanya (), [], dan {}.",
+    "formatInput": "Satu baris berisi teks yang hanya terdiri atas karakter kurung.",
+    "formatOutput": "Cetak SEIMBANG bila semua kurung berpasangan benar, atau TIDAK bila tidak.",
+    "batasan": ["Panjang teks antara 1 sampai 100.000 karakter"],
+    "contoh": [
+      {
+        "input": "([]{})",
+        "output": "SEIMBANG",
+        "penjelasan": "Setiap kurung buka memiliki pasangan penutup yang tepat dan urutannya benar."
+      },
+      {
+        "input": "([)]",
+        "output": "TIDAK",
+        "penjelasan": "Kurung siku ditutup sebelum kurung bulat yang dibuka lebih dahulu selesai."
+      }
+    ],
+    "petunjuk": [
+      "Kurung yang terakhir dibuka harus menjadi yang pertama ditutup.",
+      "Struktur data apa yang sifatnya masuk terakhir keluar pertama?",
+      "Jangan lupa memeriksa keadaan di akhir: masih adakah kurung yang belum tertutup?"
+    ],
+    "kompleksitasHarapan": "O(panjang teks)"
+  },
+  {
+    "id": "struktur-data-sedang",
+    "materiId": "struktur-data",
+    "tingkat": "sedang",
+    "judul": "Kata yang Paling Sering Muncul",
+    "cerita": "Pak Guru mengumpulkan jawaban singkat siswa dan ingin tahu kata apa yang paling sering muncul.",
+    "tugas": "Cari kata yang paling sering muncul. Bila ada beberapa kata dengan jumlah kemunculan yang sama, pilih yang lebih dahulu secara alfabet.",
+    "formatInput": "Baris pertama berisi bilangan N.\nBaris kedua berisi N kata dipisah spasi.",
+    "formatOutput": "Satu baris berisi kata terbanyak dan jumlah kemunculannya, dipisah satu spasi.",
+    "batasan": ["1 <= N <= 100.000", "Kata hanya huruf kecil, panjang maksimal 20"],
+    "contoh": [
+      {
+        "input": "5\napel jeruk apel mangga jeruk",
+        "output": "apel 2",
+        "penjelasan": "Apel dan jeruk sama-sama muncul 2 kali. Apel lebih dahulu secara alfabet."
+      },
+      {
+        "input": "3\nbudi budi ani",
+        "output": "budi 2",
+        "penjelasan": "Budi muncul 2 kali, lebih banyak daripada ani."
+      }
+    ],
+    "petunjuk": [
+      "Kamu butuh wadah yang bisa menghubungkan sebuah kata dengan angka jumlahnya.",
+      "Pilih jenis wadah yang isinya sudah tersusun secara alfabet, agar aturan seri lebih mudah dipenuhi."
+    ],
+    "kompleksitasHarapan": "O(N log N)"
+  },
+  {
+    "id": "struktur-data-sulit",
+    "materiId": "struktur-data",
+    "tingkat": "sulit",
+    "judul": "Menggabungkan Tumpukan Buku",
+    "cerita": "Di gudang ada N tumpukan buku. Petugas menggabungkan tumpukan dua per dua sampai tersisa satu tumpukan. Tenaga yang terpakai untuk sekali penggabungan sama dengan jumlah buku kedua tumpukan itu.",
+    "tugas": "Hitung total tenaga paling kecil yang diperlukan untuk menyatukan semua tumpukan menjadi satu.",
+    "formatInput": "Baris pertama berisi bilangan N.\nBaris kedua berisi N bilangan, banyaknya buku pada tiap tumpukan.",
+    "formatOutput": "Satu baris berisi total tenaga paling kecil.",
+    "batasan": ["1 <= N <= 100.000", "1 <= banyak buku <= 10.000"],
+    "contoh": [
+      {
+        "input": "3\n4 3 2",
+        "output": "14",
+        "penjelasan": "Gabungkan 2 dan 3 dengan tenaga 5, lalu gabungkan 5 dan 4 dengan tenaga 9. Totalnya 5+9 = 14."
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "output": "19",
+        "penjelasan": "Gabungkan 1+2 = 3 (tenaga 3), lalu 3+3 = 6 (tenaga 6), lalu 6+4 = 10 (tenaga 10). Totalnya 19."
+      }
+    ],
+    "petunjuk": [
+      "Setiap langkah, gabungkan dua tumpukan yang paling sedikit bukunya.",
+      "Kamu butuh wadah yang selalu bisa memberikan nilai terkecil dengan cepat, walau isinya terus berubah.",
+      "Hati-hati, total tenaganya bisa melebihi kapasitas tipe data int."
+    ],
+    "kompleksitasHarapan": "O(N log N)"
+  },
+
+  {
+    "id": "graf-tree-mudah",
+    "materiId": "graf-tree",
+    "tingkat": "mudah",
+    "judul": "Siswa Paling Banyak Teman",
+    "cerita": "Di kelas ada N siswa bernomor 1 sampai N. Pertemanan dicatat sebagai pasangan nomor siswa, dan pertemanan berlaku dua arah.",
+    "tugas": "Cari siswa yang jumlah temannya paling banyak. Bila ada beberapa, pilih yang nomornya terkecil.",
+    "formatInput": "Baris pertama berisi dua bilangan N dan M.\nM baris berikutnya masing-masing berisi dua nomor siswa yang berteman.",
+    "formatOutput": "Satu baris berisi nomor siswa dan jumlah temannya, dipisah satu spasi.",
+    "batasan": ["1 <= N <= 1000", "0 <= M <= 10.000", "Tidak ada pasangan yang dicatat dua kali"],
+    "contoh": [
+      {
+        "input": "4 4\n1 2\n1 3\n1 4\n2 3",
+        "output": "1 3",
+        "penjelasan": "Siswa 1 berteman dengan 2, 3, dan 4 sehingga punya 3 teman, paling banyak di kelas."
+      },
+      {
+        "input": "3 1\n2 3",
+        "output": "2 1",
+        "penjelasan": "Siswa 2 dan 3 sama-sama punya 1 teman. Nomor terkecil dipilih, yaitu 2."
+      }
+    ],
+    "petunjuk": [
+      "Kamu tidak perlu menyimpan seluruh struktur graf, cukup menghitung berapa kali tiap nomor disebut.",
+      "Karena pertemanan berlaku dua arah, satu baris masukan menambah hitungan untuk dua siswa sekaligus."
+    ],
+    "kompleksitasHarapan": "O(N + M)"
+  },
+  {
+    "id": "graf-tree-sedang",
+    "materiId": "graf-tree",
+    "tingkat": "sedang",
+    "judul": "Rute Terpendek Antar Kota",
+    "cerita": "Beberapa kota dihubungkan jalan dua arah. Setiap jalan panjangnya dianggap sama, yaitu satu ruas.",
+    "tugas": "Cari jumlah ruas paling sedikit untuk pergi dari kota 1 ke kota N.",
+    "formatInput": "Baris pertama berisi dua bilangan N dan M.\nM baris berikutnya masing-masing berisi dua nomor kota yang terhubung jalan.",
+    "formatOutput": "Jumlah ruas paling sedikit dari kota 1 ke kota N. Cetak -1 bila tidak ada jalur sama sekali.",
+    "batasan": ["1 <= N <= 100.000", "0 <= M <= 200.000"],
+    "contoh": [
+      {
+        "input": "5 5\n1 2\n2 3\n3 5\n1 4\n4 5",
+        "output": "2",
+        "penjelasan": "Lewat kota 1 ke 4 lalu ke 5, hanya butuh 2 ruas. Lewat 1-2-3-5 butuh 3 ruas."
+      },
+      {
+        "input": "3 1\n1 2",
+        "output": "-1",
+        "penjelasan": "Kota 3 tidak terhubung ke mana pun, jadi tidak bisa dicapai."
+      }
+    ],
+    "petunjuk": [
+      "Karena panjang setiap jalan sama, penelusuran melebar akan menemukan jarak terpendek lebih dulu.",
+      "Tandai kota yang sudah pernah dikunjungi agar tidak berputar-putar selamanya.",
+      "Jangan lupa keadaan khusus ketika kota tujuan sama dengan kota asal."
+    ],
+    "kompleksitasHarapan": "O(N + M)"
+  },
+  {
+    "id": "graf-tree-sulit",
+    "materiId": "graf-tree",
+    "tingkat": "sulit",
+    "judul": "Struktur Organisasi OSIS",
+    "cerita": "Struktur OSIS berbentuk pohon. Simpul 1 adalah ketua. Setiap anggota lain punya tepat satu atasan langsung.",
+    "tugas": "Cari kedalaman struktur tersebut, yaitu banyaknya tingkat dari ketua sampai anggota terbawah, serta hitung berapa anggota yang tidak memiliki bawahan sama sekali.",
+    "formatInput": "Baris pertama berisi bilangan N.\nBaris kedua berisi N bilangan. Bilangan ke-i adalah nomor atasan langsung anggota ke-i. Untuk ketua, nilainya 0.",
+    "formatOutput": "Satu baris berisi kedalaman struktur dan jumlah anggota tanpa bawahan, dipisah satu spasi.",
+    "batasan": ["1 <= N <= 100.000", "Struktur dijamin berbentuk pohon dengan simpul 1 sebagai akar"],
+    "contoh": [
+      {
+        "input": "5\n0 1 1 2 2",
+        "output": "3 3",
+        "penjelasan": "Ketua adalah 1. Anggota 2 dan 3 di tingkat dua. Anggota 4 dan 5 di tingkat tiga. Yang tanpa bawahan ada tiga, yaitu 3, 4, dan 5."
+      },
+      {
+        "input": "1\n0",
+        "output": "1 1",
+        "penjelasan": "Hanya ada ketua. Kedalamannya satu tingkat, dan ia sendiri tidak punya bawahan."
+      }
+    ],
+    "petunjuk": [
+      "Susun dulu daftar bawahan untuk setiap anggota dari data atasan yang diberikan.",
+      "Kedalaman bisa dicari dengan menelusuri pohon sambil membawa tingkat saat ini.",
+      "Untuk N sebesar 100.000, penelusuran rekursif berisiko membuat tumpukan pemanggilan meluap. Pertimbangkan penelusuran tanpa rekursi."
+    ],
+    "kompleksitasHarapan": "O(N)"
+  },
+
+  {
+    "id": "geometri-dasar-mudah",
+    "materiId": "geometri-dasar",
+    "tingkat": "mudah",
+    "judul": "Jarak Dua Tiang Bendera",
+    "cerita": "Panitia lomba menandai posisi dua tiang di lapangan menggunakan koordinat. Mereka perlu tahu jarak lurus antara keduanya.",
+    "tugas": "Hitung jarak antara dua titik pada bidang koordinat.",
+    "formatInput": "Satu baris berisi empat bilangan bulat x1, y1, x2, dan y2.",
+    "formatOutput": "Satu baris berisi jarak kedua titik, dibulatkan menjadi dua angka di belakang koma.",
+    "batasan": ["-1000 <= koordinat <= 1000"],
+    "contoh": [
+      {
+        "input": "0 0 3 4",
+        "output": "5.00",
+        "penjelasan": "Selisih mendatar 3 dan menegak 4, sehingga jaraknya akar dari 9+16 yaitu 5."
+      },
+      {
+        "input": "0 0 1 1",
+        "output": "1.41",
+        "penjelasan": "Akar dari 1+1 kira-kira 1,4142 lalu dibulatkan menjadi 1,41."
+      }
+    ],
+    "petunjuk": [
+      "Gunakan rumus jarak yang berasal dari teorema Pythagoras.",
+      "Untuk mengatur banyaknya angka di belakang koma, pelajari setprecision dan fixed pada pustaka iomanip."
+    ],
+    "kompleksitasHarapan": "O(1)"
+  },
+  {
+    "id": "geometri-dasar-sedang",
+    "materiId": "geometri-dasar",
+    "tingkat": "sedang",
+    "judul": "Luas Taman Segitiga",
+    "cerita": "Sekolah akan membuat taman berbentuk segitiga. Ketiga sudutnya sudah ditandai dengan patok dan dicatat koordinatnya.",
+    "tugas": "Hitung luas segitiga yang dibentuk oleh tiga titik tersebut.",
+    "formatInput": "Tiga baris, masing-masing berisi dua bilangan bulat koordinat x dan y sebuah patok.",
+    "formatOutput": "Satu baris berisi luas segitiga, dibulatkan menjadi dua angka di belakang koma.",
+    "batasan": ["-1000 <= koordinat <= 1000"],
+    "contoh": [
+      {
+        "input": "0 0\n4 0\n0 3",
+        "output": "6.00",
+        "penjelasan": "Alasnya 4 dan tingginya 3, sehingga luasnya setengah dari 4 kali 3 yaitu 6."
+      },
+      {
+        "input": "1 1\n2 3\n4 1",
+        "output": "3.00",
+        "penjelasan": "Alasnya 3 satuan mendatar dan tingginya 2 satuan menegak, sehingga luasnya 3."
+      }
+    ],
+    "petunjuk": [
+      "Rumus alas kali tinggi sulit dipakai bila segitiganya miring.",
+      "Cari tahu tentang rumus luas dari koordinat titik, sering disebut rumus tali sepatu.",
+      "Hasil rumus itu bisa bernilai negatif, tergantung urutan titiknya. Apa yang harus kamu lakukan?"
+    ],
+    "kompleksitasHarapan": "O(1)"
+  },
+  {
+    "id": "geometri-dasar-sulit",
+    "materiId": "geometri-dasar",
+    "tingkat": "sulit",
+    "judul": "Apakah Tenda Berada di Dalam Area",
+    "cerita": "Area perkemahan berbentuk segitiga yang ditandai tiga patok. Panitia ingin memeriksa apakah lokasi sebuah tenda berada di dalam area itu. Tenda yang tepat berada di garis batas masih dianggap di dalam.",
+    "tugas": "Tentukan apakah sebuah titik berada di dalam segitiga.",
+    "formatInput": "Tiga baris pertama berisi koordinat ketiga patok segitiga.\nBaris keempat berisi koordinat lokasi tenda.",
+    "formatOutput": "Cetak DI DALAM bila titik berada di dalam atau tepat pada batas segitiga, atau DI LUAR bila tidak.",
+    "batasan": ["-1000 <= koordinat <= 1000", "Ketiga patok dijamin tidak segaris"],
+    "contoh": [
+      {
+        "input": "0 0\n5 0\n0 5\n1 1",
+        "output": "DI DALAM",
+        "penjelasan": "Titik (1,1) berada di dalam segitiga siku-siku tersebut."
+      },
+      {
+        "input": "0 0\n5 0\n0 5\n5 5",
+        "output": "DI LUAR",
+        "penjelasan": "Titik (5,5) berada di seberang sisi miring, sehingga di luar segitiga."
+      }
+    ],
+    "petunjuk": [
+      "Perkalian silang dua vektor bisa memberi tahu sebuah titik berada di sebelah kiri atau kanan sebuah garis.",
+      "Periksa posisi titik terhadap ketiga sisi. Apa yang terjadi bila hasilnya searah semua?",
+      "Nilai nol pada perkalian silang berarti titik tepat berada di garis. Jangan sampai kasus ini terlewat."
+    ],
+    "kompleksitasHarapan": "O(1)"
+  }
+]

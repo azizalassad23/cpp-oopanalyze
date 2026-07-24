@@ -5,9 +5,12 @@
  *   1. per murid  — agar satu orang tidak menghabiskan jatah kelas
  *   2. total kelas — jaring pengaman bila kode akses bocor ke luar
  *
- * KV bersifat eventually consistent, jadi hitungan bisa meleset satu-dua bila
- * ada dua permintaan tepat bersamaan. Untuk kelas berisi 10 murid, selisih
- * sekecil itu tidak masalah.
+ * Penghitungnya disimpan di Durable Object, bukan KV. KV menyimpan hasil baca
+ * di cache selama sekitar 60 detik, sehingga permintaan yang datang beruntun
+ * membaca angka lama dan menulis angka yang sama berulang-ulang — batas
+ * hariannya jadi tidak berlaku untuk pemakaian cepat. Durable Object
+ * memberikan hitungan yang selalu tepat karena seluruh permintaan diproses
+ * berurutan pada satu tempat.
  */
 
 /** Tanggal hari ini menurut zona waktu Indonesia Barat, format YYYY-MM-DD. */
@@ -20,15 +23,24 @@ export function tanggalHariIni() {
   }).format(new Date())
 }
 
-const KEDALUWARSA_DETIK = 60 * 60 * 36 // 36 jam, cukup untuk melewati pergantian hari
-
-async function baca(env, kunci) {
-  const nilai = await env.KUOTA.get(kunci)
-  return nilai ? parseInt(nilai, 10) || 0 : 0
+/** Semua penghitung kelas ditaruh pada satu Durable Object yang sama. */
+function penghitung(env) {
+  return env.PENGHITUNG.get(env.PENGHITUNG.idFromName('kuota-harian'))
 }
 
-async function tambah(env, kunci, sekarang) {
-  await env.KUOTA.put(kunci, String(sekarang + 1), { expirationTtl: KEDALUWARSA_DETIK })
+async function tanya(env, aksi, muatan) {
+  const respons = await penghitung(env).fetch('https://kuota/', {
+    method: 'POST',
+    body: JSON.stringify({ aksi, ...muatan }),
+  })
+  return respons.json()
+}
+
+function batasan(env) {
+  return {
+    batasMurid: parseInt(env.BATAS_HARIAN_MURID, 10) || 30,
+    batasTotal: parseInt(env.BATAS_HARIAN_TOTAL, 10) || 400,
+  }
 }
 
 /**
@@ -41,14 +53,11 @@ async function tambah(env, kunci, sekarang) {
  * @returns {{boleh: boolean, alasan?: string, sisa: number, batas: number}}
  */
 export async function periksaKuota(env, clientId) {
-  const hari = tanggalHariIni()
-  const batasMurid = parseInt(env.BATAS_HARIAN_MURID, 10) || 30
-  const batasTotal = parseInt(env.BATAS_HARIAN_TOTAL, 10) || 400
-
-  const [pakaiMurid, pakaiTotal] = await Promise.all([
-    baca(env, `kuota:${hari}:${clientId}`),
-    baca(env, `kuota:${hari}:__total__`),
-  ])
+  const { batasMurid, batasTotal } = batasan(env)
+  const { pakaiMurid, pakaiTotal } = await tanya(env, 'lihat', {
+    hari: tanggalHariIni(),
+    clientId,
+  })
 
   if (pakaiMurid >= batasMurid) {
     return {
@@ -73,29 +82,57 @@ export async function periksaKuota(env, clientId) {
 
 /** Mengurangi jatah. Dipanggil hanya setelah permintaan berhasil dilayani. */
 export async function naikkanKuota(env, clientId) {
-  const hari = tanggalHariIni()
-  const batasMurid = parseInt(env.BATAS_HARIAN_MURID, 10) || 30
-
-  const kunciMurid = `kuota:${hari}:${clientId}`
-  const kunciTotal = `kuota:${hari}:__total__`
-
-  const [pakaiMurid, pakaiTotal] = await Promise.all([
-    baca(env, kunciMurid),
-    baca(env, kunciTotal),
-  ])
-
-  await Promise.all([
-    tambah(env, kunciMurid, pakaiMurid),
-    tambah(env, kunciTotal, pakaiTotal),
-  ])
-
-  return { sisa: Math.max(0, batasMurid - pakaiMurid - 1), batas: batasMurid }
+  const { batasMurid } = batasan(env)
+  const { pakaiMurid } = await tanya(env, 'naikkan', {
+    hari: tanggalHariIni(),
+    clientId,
+  })
+  return { sisa: Math.max(0, batasMurid - pakaiMurid), batas: batasMurid }
 }
 
 /** Melihat sisa kuota tanpa menguranginya. */
 export async function lihatKuota(env, clientId) {
-  const hari = tanggalHariIni()
-  const batasMurid = parseInt(env.BATAS_HARIAN_MURID, 10) || 30
-  const pakaiMurid = await baca(env, `kuota:${hari}:${clientId}`)
+  const { batasMurid } = batasan(env)
+  const { pakaiMurid } = await tanya(env, 'lihat', { hari: tanggalHariIni(), clientId })
   return { sisa: Math.max(0, batasMurid - pakaiMurid), batas: batasMurid }
+}
+
+/**
+ * Durable Object penyimpan penghitung.
+ *
+ * Cloudflare menjamin hanya ada satu salinan aktif dan permintaannya diproses
+ * satu per satu, sehingga tidak ada dua permintaan yang membaca angka sama
+ * lalu sama-sama menulis angka+1.
+ */
+export class PenghitungKuota {
+  constructor(state) {
+    this.state = state
+  }
+
+  async fetch(request) {
+    const { aksi, hari, clientId } = await request.json()
+
+    // Ganti hari berarti semua hitungan kemarin sudah tidak berguna.
+    const hariTersimpan = await this.state.storage.get('hari')
+    if (hariTersimpan !== hari) {
+      await this.state.storage.deleteAll()
+      await this.state.storage.put('hari', hari)
+    }
+
+    const kunciMurid = `m:${clientId}`
+    const kunciTotal = 't'
+
+    let pakaiMurid = (await this.state.storage.get(kunciMurid)) || 0
+    let pakaiTotal = (await this.state.storage.get(kunciTotal)) || 0
+
+    if (aksi === 'naikkan') {
+      pakaiMurid += 1
+      pakaiTotal += 1
+      await this.state.storage.put({ [kunciMurid]: pakaiMurid, [kunciTotal]: pakaiTotal })
+    }
+
+    return new Response(JSON.stringify({ pakaiMurid, pakaiTotal }), {
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
 }

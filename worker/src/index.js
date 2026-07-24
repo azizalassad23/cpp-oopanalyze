@@ -1,6 +1,8 @@
 import { MATERI } from '../../src/data/materi.js'
 import { headerCors, balasJson, balasGalat } from './cors.js'
 import { periksaKuota, naikkanKuota, lihatKuota } from './kuota.js'
+
+export { PenghitungKuota } from './kuota.js'
 import { mintaJson, GalatGemini } from './gemini.js'
 import { skemaAnalisa, SKEMA_SOAL } from './skema.js'
 import {

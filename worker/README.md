@@ -6,6 +6,10 @@ Perantara antara halaman web dan Gemini. Tugasnya tiga:
 2. **Memeriksa kode akses kelas** sebelum meneruskan permintaan
 3. **Membatasi pemakaian** 30 kali/murid/hari dan 400 kali/kelas/hari
 
+Penghitung kuota memakai Durable Object. KV sempat dipakai, tetapi hasil
+bacanya disimpan di cache selama sekitar 60 detik sehingga permintaan yang
+datang beruntun membaca angka lama dan batas hariannya tidak berlaku.
+
 Prompt dan rubrik penilaian juga disimpan di sini, bukan di frontend. Jadi murid
 tidak bisa membuka DevTools lalu memaksa Mode Petunjuk berubah jadi Mode
 Pembahasan — permintaannya tetap diproses server sesuai aturan.
@@ -24,16 +28,7 @@ cd worker && npx wrangler login
 
 Browser akan terbuka, klik **Allow**.
 
-### 3. Buat tempat penyimpanan kuota
-
-```bash
-npx wrangler kv namespace create KUOTA
-```
-
-Perintah di atas mencetak sebuah `id`. Buka [wrangler.toml](wrangler.toml), lalu
-tempel id tersebut pada baris `id = "..."` di bagian `[[kv_namespaces]]`.
-
-### 4. Terbitkan Worker
+### 3. Terbitkan Worker
 
 ```bash
 npx wrangler deploy
@@ -50,7 +45,7 @@ Cloudflare akan mencetak alamat seperti
 Pada tahap ini Worker sudah hidup tetapi belum bisa dipakai — wajar, karena
 rahasianya belum diisi. Lanjut ke langkah berikutnya.
 
-### 5. Simpan dua rahasia
+### 4. Simpan dua rahasia
 
 ```bash
 npx wrangler secret put GEMINI_API_KEY

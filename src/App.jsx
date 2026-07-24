@@ -11,6 +11,8 @@ export default function App() {
   const [tab, setTab] = useState('analisa')
   const [status, setStatus] = useState('memeriksa') // memeriksa | perlu-kode | siap
   const [kuota, setKuota] = useState(null)
+  // Soal yang sedang dikerjakan, dibawa dari tab Latihan Soal ke tab Analisa.
+  const [soalAktif, setSoalAktif] = useState(null)
 
   // Kode akses tersimpan di perangkat, jadi murid cukup mengetiknya sekali.
   useEffect(() => {
@@ -60,14 +62,24 @@ export default function App() {
 
       <main className="mx-auto max-w-7xl px-4 py-6">
         {tab === 'analisa' ? (
-          <AnalyzePage onKuotaBerubah={setKuota} />
+          <AnalyzePage
+            onKuotaBerubah={setKuota}
+            soalAktif={soalAktif}
+            onTutupSoal={() => setSoalAktif(null)}
+          />
         ) : (
-          <ProblemsPage onKuotaBerubah={setKuota} />
+          <ProblemsPage
+            onKuotaBerubah={setKuota}
+            onKerjakan={(soal) => {
+              setSoalAktif(soal)
+              setTab('analisa')
+            }}
+          />
         )}
       </main>
 
       <footer className="mx-auto max-w-7xl px-4 pb-8 pt-2 text-center text-xs text-slate-400">
-        CppAnalyze — alat bantu belajar, bukan pengganti latihan mandiri.
+        M. Aziz Al Assad, S.T., Gr. — 2026
       </footer>
     </div>
   )

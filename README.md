@@ -50,9 +50,29 @@ Sekali saja di awal: buka **Settings → Pages** pada repo, lalu setel
 - [x] Tahap 2 — Cloudflare Worker sebagai proxy Gemini
 - [x] Tahap 3 — Eksekusi kode C++ via Wandbox
 - [x] Tahap 4 — Analisa kode berrubrik per materi
-- [ ] Tahap 5 — Bank soal dan generate soal
+- [x] Tahap 5 — Bank soal dan generate soal
+
+## Bank soal
+
+18 soal (6 materi × 3 tingkat) tersimpan di
+[src/data/bank-soal.json](src/data/bank-soal.json). Setiap contoh masukan dan
+keluarannya sudah diuji dengan menjalankan solusi referensi lewat compiler
+sungguhan:
+
+```bash
+npm run verifikasi-soal
+```
+
+Solusi referensinya ada di [scripts/solusi-referensi.mjs](scripts/solusi-referensi.mjs),
+sengaja di luar folder `src/` agar tidak ikut terkirim ke browser murid.
+
+Untuk menambah soal: tulis soalnya di `bank-soal.json`, tambahkan solusi
+referensi dengan `id` yang sama, lalu jalankan perintah verifikasi di atas.
 
 ## Catatan teknis
 
-Penjalan kode memakai [Wandbox](https://wandbox.org), bukan Piston. API publik
-Piston ditutup menjadi daftar putih pada 15 Februari 2026.
+- Penjalan kode memakai [Wandbox](https://wandbox.org), bukan Piston. API publik
+  Piston ditutup menjadi daftar putih pada 15 Februari 2026.
+- Penghitung kuota memakai Durable Object, bukan KV, karena hasil baca KV
+  disimpan di cache sekitar 60 detik sehingga permintaan beruntun tidak
+  terhitung dengan benar.

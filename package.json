@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verifikasi-soal": "node scripts/verifikasi-soal.mjs"
   },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.2",
