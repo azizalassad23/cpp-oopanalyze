@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.env
+.env.*
+!.env.example
+
+# Cloudflare Worker (Tahap 2)
+worker/node_modules
+worker/.wrangler
+.dev.vars
