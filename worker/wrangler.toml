@@ -1,0 +1,23 @@
+name = "cpp-oopanalyze-api"
+main = "src/index.js"
+compatibility_date = "2026-07-01"
+
+# Pengaturan yang boleh dilihat publik. Untuk mengubah batas kuota atau model,
+# cukup ubah di sini lalu `npm run deploy` — tidak perlu menyentuh kode.
+[vars]
+GEMINI_MODEL = "gemini-2.5-flash"
+BATAS_HARIAN_MURID = "30"
+BATAS_HARIAN_TOTAL = "400"
+ASAL_DIIZINKAN = "https://azizalassad23.github.io,http://localhost:5173"
+
+# Penyimpanan penghitung kuota harian.
+# Jalankan: npx wrangler kv namespace create KUOTA
+# lalu tempel id yang muncul ke baris di bawah ini.
+[[kv_namespaces]]
+binding = "KUOTA"
+id = "GANTI_DENGAN_ID_KV_ANDA"
+
+# CATATAN: GEMINI_API_KEY dan KODE_AKSES TIDAK ditulis di berkas ini.
+# Keduanya disimpan sebagai secret:
+#   npx wrangler secret put GEMINI_API_KEY
+#   npx wrangler secret put KODE_AKSES
