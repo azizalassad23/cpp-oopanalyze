@@ -20,7 +20,7 @@ GitHub Pages (static)  ──►  Cloudflare Worker  ──►  Gemini API
    CodeMirror 6                 kode akses kelas,
                                 rate limit)
         │
-        └──────────────►  Piston API (compile & run C++)
+        └──────────────►  Wandbox API (compile & run C++)
 ```
 
 API key Gemini **tidak pernah** ada di kode frontend — key disimpan sebagai secret
@@ -47,7 +47,12 @@ Sekali saja di awal: buka **Settings → Pages** pada repo, lalu setel
 ## Status pengerjaan
 
 - [x] Tahap 1 — Fondasi: layout, editor C++, deploy otomatis
-- [ ] Tahap 2 — Cloudflare Worker sebagai proxy Gemini
-- [ ] Tahap 3 — Eksekusi kode C++ via Piston
+- [x] Tahap 2 — Cloudflare Worker sebagai proxy Gemini
+- [x] Tahap 3 — Eksekusi kode C++ via Wandbox
 - [ ] Tahap 4 — Analisa kode berrubrik per materi
 - [ ] Tahap 5 — Bank soal dan generate soal
+
+## Catatan teknis
+
+Penjalan kode memakai [Wandbox](https://wandbox.org), bukan Piston. API publik
+Piston ditutup menjadi daftar putih pada 15 Februari 2026.
