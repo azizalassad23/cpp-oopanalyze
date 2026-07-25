@@ -4,10 +4,12 @@ import { periksaKuota, naikkanKuota, lihatKuota } from './kuota.js'
 
 export { PenghitungKuota } from './kuota.js'
 import { mintaJson, GalatGemini } from './gemini.js'
-import { skemaAnalisa, SKEMA_SOAL } from './skema.js'
+import { skemaAnalisa, skemaBarisPerBaris, SKEMA_SOAL } from './skema.js'
 import {
   sistemAnalisa,
   perintahAnalisa,
+  sistemBarisPerBaris,
+  perintahBarisPerBaris,
   sistemSoal,
   perintahSoal,
 } from './prompts.js'
@@ -130,7 +132,7 @@ async function tanganiAnalisa(request, env, cors) {
     )
   }
 
-  const mode = badan.mode === 'pembahasan' ? 'pembahasan' : 'petunjuk'
+  const mode = ['pembahasan', 'baris'].includes(badan.mode) ? badan.mode : 'petunjuk'
   const materiId = ID_MATERI.includes(badan.materiId) ? badan.materiId : null
   const stdin = String(badan.stdin || '').slice(0, MAKS_PANJANG_STDIN)
   const hasilEksekusi = bersihkanHasilEksekusi(badan.hasilEksekusi)
@@ -140,12 +142,24 @@ async function tanganiAnalisa(request, env, cors) {
     return balasGalat('kuota_habis', jatah.alasan, { status: 429, cors, kuota: jatah })
   }
 
-  const hasil = await mintaJson(env, {
-    sistem: sistemAnalisa(mode),
-    perintah: perintahAnalisa({ kode, materiId, stdin, hasilEksekusi }),
-    skema: skemaAnalisa(mode),
-    suhu: 0.2,
-  })
+  // Mode baris per baris hanya menjelaskan kode, sedang dua mode lain memeriksa
+  // dan menilainya, sehingga prompt dan skemanya berbeda.
+  const permintaan =
+    mode === 'baris'
+      ? {
+          sistem: sistemBarisPerBaris(),
+          perintah: perintahBarisPerBaris({ kode }),
+          skema: skemaBarisPerBaris(),
+          suhu: 0.2,
+        }
+      : {
+          sistem: sistemAnalisa(mode),
+          perintah: perintahAnalisa({ kode, materiId, stdin, hasilEksekusi }),
+          skema: skemaAnalisa(mode),
+          suhu: 0.2,
+        }
+
+  const hasil = await mintaJson(env, permintaan)
 
   const kuota = await naikkanKuota(env, clientId)
   return balasJson({ ok: true, mode, hasil, kuota }, { cors })

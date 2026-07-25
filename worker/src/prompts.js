@@ -101,6 +101,42 @@ ${bernomor(kode)}
 `.trim()
 }
 
+/** Instruksi sistem untuk mode "baris per baris". */
+export function sistemBarisPerBaris() {
+  return `
+Kamu adalah guru pemrograman C++ di sekolah menengah Indonesia. Seorang murid
+yang MASIH BELAJAR MEMBACA KODE meminta kamu menjelaskan kodenya baris demi
+baris, agar ia paham arti tiap bagian.
+
+${GAYA_BAHASA}
+
+TUGASMU KALI INI BUKAN mencari kesalahan atau menilai kode. Fokusmu hanya satu:
+membuat murid mengerti apa yang dilakukan kodenya, sesederhana mungkin.
+
+- Mulai dari gambaran besar (bagian ringkasan), lalu tujuan tiap fungsi, baru
+  turun ke tiap baris.
+- Pada tiap langkah, salin potongan kodenya lalu jelaskan artinya dengan
+  bahasa yang sangat sederhana, seolah pembacanya belum pernah melihat kode.
+- Jelaskan istilah yang mungkin asing, misalnya apa itu "vector", "return",
+  atau "cin".
+- Ikuti urutan baris dari atas ke bawah. Lewati baris kosong dan kurung
+  penutup yang berdiri sendiri.
+- Jangan menghakimi apakah kodenya benar atau salah. Jelaskan saja apa adanya.
+
+${PENGAMAN}
+`.trim()
+}
+
+/** Perintah untuk mode "baris per baris". */
+export function perintahBarisPerBaris({ kode }) {
+  return `
+Jelaskan kode C++ berikut baris demi baris untuk murid yang baru belajar
+membaca kode. Kode sudah diberi nomor baris:
+
+${bernomor(kode)}
+`.trim()
+}
+
 /** Instruksi sistem untuk fitur pembuatan soal. */
 export function sistemSoal() {
   return `

@@ -14,6 +14,32 @@ const pilihan = (nilai, deskripsi) => ({
   description: deskripsi,
 })
 
+const MATERI_ENUM = [
+  'rekursi',
+  'pencarian-pengurutan',
+  'strategi-pemecahan',
+  'struktur-data',
+  'graf-tree',
+  'geometri-dasar',
+  'lainnya',
+]
+
+/** Penjelasan tujuan tiap fungsi atau blok besar. Dipakai di beberapa mode. */
+const perFungsi = {
+  type: 'ARRAY',
+  description:
+    'Penjelasan tiap fungsi atau blok besar dalam kode, urut sesuai kemunculannya. Termasuk fungsi main.',
+  items: {
+    type: 'OBJECT',
+    properties: {
+      nama: teks('Nama fungsi atau bagian, contoh: "fungsi faktorial" atau "fungsi main".'),
+      tujuan: teks('Untuk apa bagian ini, dalam satu sampai dua kalimat sederhana.'),
+    },
+    required: ['nama', 'tujuan'],
+    propertyOrdering: ['nama', 'tujuan'],
+  },
+}
+
 /**
  * Skema analisa kode.
  * @param {'petunjuk'|'pembahasan'} mode
@@ -56,24 +82,13 @@ export function skemaAnalisa(mode) {
     temuan.propertyOrdering.push('perbaikan')
   }
 
-  return {
+  const skema = {
     type: 'OBJECT',
     properties: {
       ringkasan: teks(
         'Dua sampai tiga kalimat: sebenarnya kode ini melakukan apa? Tulis seolah menjelaskan ke teman sekelas.',
       ),
-      materiTerdeteksi: pilihan(
-        [
-          'rekursi',
-          'pencarian-pengurutan',
-          'strategi-pemecahan',
-          'struktur-data',
-          'graf-tree',
-          'geometri-dasar',
-          'lainnya',
-        ],
-        'Materi yang paling menonjol pada kode ini.',
-      ),
+      materiTerdeteksi: pilihan(MATERI_ENUM, 'Materi yang paling menonjol pada kode ini.'),
       status: pilihan(
         ['benar', 'hampir', 'salah'],
         'benar = tidak ada masalah berarti, hampir = jalan tapi ada kasus yang keliru, salah = tidak berjalan atau hasilnya keliru',
@@ -147,6 +162,56 @@ export function skemaAnalisa(mode) {
       'skor',
       'langkahBerikutnya',
     ],
+  }
+
+  // Mode menyeluruh juga menjelaskan tujuan tiap fungsi, agar murid memahami
+  // susunan programnya sebelum masuk ke rincian temuan.
+  if (mode === 'pembahasan') {
+    skema.properties.penjelasanPerFungsi = perFungsi
+    skema.required.splice(2, 0, 'penjelasanPerFungsi')
+    skema.propertyOrdering.splice(2, 0, 'penjelasanPerFungsi')
+  }
+
+  return skema
+}
+
+/**
+ * Skema mode "baris per baris".
+ *
+ * Bukan untuk mencari kesalahan, melainkan membantu murid yang belum lancar
+ * membaca kode memahami arti tiap barisnya. Karena itu isinya berbeda: tanpa
+ * temuan atau skor, tetapi ada penjelasan per fungsi dan penelusuran baris
+ * demi baris.
+ */
+export function skemaBarisPerBaris() {
+  return {
+    type: 'OBJECT',
+    properties: {
+      ringkasan: teks(
+        'Dua sampai tiga kalimat: secara keseluruhan program ini melakukan apa? Tulis untuk murid yang baru belajar membaca kode.',
+      ),
+      materiTerdeteksi: pilihan(MATERI_ENUM, 'Materi yang paling menonjol pada kode ini.'),
+      penjelasanPerFungsi: perFungsi,
+      langkah: {
+        type: 'ARRAY',
+        description:
+          'Penelusuran baris demi baris, urut dari atas ke bawah. Beberapa baris yang berkaitan erat boleh digabung menjadi satu langkah. Lewati baris kosong dan kurung penutup yang berdiri sendiri. Maksimal 40 langkah.',
+        items: {
+          type: 'OBJECT',
+          properties: {
+            baris: teks('Nomor baris atau rentang baris, contoh: "5" atau "5-7".'),
+            kode: teks('Potongan kode pada baris tersebut, disalin persis apa adanya.'),
+            penjelasan: teks(
+              'Arti baris ini dalam bahasa sehari-hari yang sangat sederhana, seolah menjelaskan ke orang yang baru pertama kali melihat kode. Jelaskan juga istilah yang mungkin asing.',
+            ),
+          },
+          required: ['baris', 'kode', 'penjelasan'],
+          propertyOrdering: ['baris', 'kode', 'penjelasan'],
+        },
+      },
+    },
+    required: ['ringkasan', 'materiTerdeteksi', 'penjelasanPerFungsi', 'langkah'],
+    propertyOrdering: ['ringkasan', 'materiTerdeteksi', 'penjelasanPerFungsi', 'langkah'],
   }
 }
 

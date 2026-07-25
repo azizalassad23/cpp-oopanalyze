@@ -61,6 +61,23 @@ export default function AnalysisResult({ hasil, mode }) {
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">{hasil.ringkasan}</p>
       </Kartu>
 
+      {hasil.penjelasanPerFungsi?.length > 0 && (
+        <Kartu judul="Tujuan tiap bagian">
+          <ul className="flex flex-col gap-2.5">
+            {hasil.penjelasanPerFungsi.map((f, i) => (
+              <li key={i} className="flex flex-col gap-0.5">
+                <span className="font-mono text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+                  {f.nama}
+                </span>
+                <span className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                  {f.tujuan}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Kartu>
+      )}
+
       <Skor skor={hasil.skor} />
 
       {hasil.temuan?.length > 0 ? (
