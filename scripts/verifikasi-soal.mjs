@@ -11,6 +11,9 @@
 import { readFile } from 'node:fs/promises'
 import { SOLUSI } from './solusi-referensi.mjs'
 
+const muat = async (jalur) =>
+  JSON.parse(await readFile(new URL(jalur, import.meta.url)))
+
 const WANDBOX = 'https://wandbox.org/api/compile.json'
 const JEDA_MS = 400
 
@@ -41,13 +44,39 @@ const samakan = (teks) =>
     .join('\n')
     .trim()
 
-const soalSemua = JSON.parse(await readFile(new URL('../src/data/bank-soal.json', import.meta.url)))
+const soalSemua = await muat('../src/data/bank-soal.json')
+const kerangkaSemua = await muat('../src/data/kerangka.json')
 
 let lolos = 0
 let gagal = 0
 const masalah = []
 
 for (const soal of soalSemua) {
+  // Kerangka wajib bisa dicompile apa adanya. Murid yang menekan Jalankan
+  // sebelum menulis apa pun harus melihat program berjalan, bukan tumpukan
+  // pesan galat yang membuatnya mengira dirinya sudah salah sejak awal.
+  const kerangka = kerangkaSemua[soal.id]
+  if (!kerangka) {
+    masalah.push(`${soal.id}: belum punya kerangka kode`)
+    gagal++
+  } else {
+    try {
+      const hasil = await jalankan(kerangka, soal.contoh[0].input)
+      if (/\berror:/.test(hasil.compiler_error || '')) {
+        console.log(`  GAGAL  ${soal.id} kerangka`)
+        masalah.push(`${soal.id} kerangka gagal dicompile\n${hasil.compiler_error}`)
+        gagal++
+      } else {
+        console.log(`  lolos  ${soal.id} kerangka`)
+        lolos++
+      }
+    } catch (e) {
+      masalah.push(`${soal.id} kerangka: ${e.message}`)
+      gagal++
+    }
+    await jeda(JEDA_MS)
+  }
+
   const solusi = SOLUSI[soal.id]
   if (!solusi) {
     masalah.push(`${soal.id}: belum punya solusi referensi`)

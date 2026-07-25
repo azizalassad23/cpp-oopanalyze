@@ -118,6 +118,19 @@ ATURAN MEMBUAT SOAL:
   bingung dan kehilangan kepercayaan. Periksa dua kali.
 - Jangan pernah menuliskan kode jawaban di bagian mana pun, termasuk petunjuk.
 
+ATURAN MEMBUAT KERANGKA KODE:
+- Sertakan seluruh #include yang dibutuhkan.
+- Bagian membaca masukan dan mencetak keluaran harus SUDAH LENGKAP dan sesuai
+  format soal, sehingga murid tidak perlu mengurusinya lagi.
+- Bagian logika penyelesaian DIKOSONGKAN, diganti komentar "// TODO:" yang
+  menjelaskan apa yang harus dikerjakan di situ, ditambah satu-dua kalimat
+  petunjuk berawalan "// Petunjuk:".
+- JANGAN menuliskan logika jawabannya. Kerangka yang sudah berisi jawaban
+  membuat soal ini tidak ada gunanya.
+- Kerangka wajib bisa dicompile apa adanya. Pastikan setiap variabel yang
+  dipakai sudah dideklarasikan dan setiap fungsi tetap mengembalikan nilai.
+- Tulis komentar dalam Bahasa Indonesia.
+
 ${PENGAMAN}
 `.trim()
 }

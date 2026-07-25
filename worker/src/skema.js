@@ -188,6 +188,9 @@ export const SKEMA_SOAL = {
       items: { type: 'STRING' },
     },
     kompleksitasHarapan: teks('Kompleksitas solusi yang diharapkan, contoh: O(n log n)'),
+    kerangka: teks(
+      'Kerangka kode C++ awal. Bagian membaca masukan dan mencetak keluaran WAJIB sudah lengkap dan benar sesuai format soal. Bagian logika penyelesaiannya dikosongkan dan diganti komentar berawalan "// TODO:" beserta petunjuk singkat. Kerangka ini WAJIB bisa dicompile apa adanya.',
+    ),
   },
   required: [
     'judul',
@@ -199,6 +202,7 @@ export const SKEMA_SOAL = {
     'contoh',
     'petunjuk',
     'kompleksitasHarapan',
+    'kerangka',
   ],
   propertyOrdering: [
     'judul',
@@ -210,5 +214,6 @@ export const SKEMA_SOAL = {
     'contoh',
     'petunjuk',
     'kompleksitasHarapan',
+    'kerangka',
   ],
 }

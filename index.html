@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Alat bantu belajar pemrograman C++: analisa kode dan latihan soal untuk siswa." />
     <title>CppAnalyze — Analisa Kode & Latihan Soal C++</title>
+    <script>
+      // Dijalankan sebelum halaman digambar agar tema gelap tidak berkedip
+      // putih sesaat saat dimuat.
+      try {
+        var pilihan = localStorage.getItem('cppanalyze:tema')
+        var gelap = pilihan
+          ? pilihan === 'gelap'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (gelap) document.documentElement.classList.add('dark')
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

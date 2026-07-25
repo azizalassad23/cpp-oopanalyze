@@ -1,12 +1,13 @@
 import CodeMirror from '@uiw/react-codemirror'
 import { cpp } from '@codemirror/lang-cpp'
 
-export default function CodeEditor({ value, onChange }) {
+export default function CodeEditor({ value, onChange, tema }) {
   return (
-    <div className="h-full overflow-hidden rounded-xl border border-slate-200 bg-white">
+    <div className="h-full overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
       <CodeMirror
         value={value}
         onChange={onChange}
+        theme={tema === 'gelap' ? 'dark' : 'light'}
         extensions={[cpp()]}
         basicSetup={{
           lineNumbers: true,

@@ -1,21 +1,42 @@
 import { getMateri } from '../data/materi.js'
 
 const STATUS = {
-  benar: { ikon: '✅', judul: 'Kodenya sudah benar', kelas: 'bg-emerald-50 text-emerald-800 ring-emerald-100' },
-  hampir: { ikon: '🟡', judul: 'Hampir benar, masih ada yang perlu diperbaiki', kelas: 'bg-amber-50 text-amber-800 ring-amber-100' },
-  salah: { ikon: '❌', judul: 'Masih ada kesalahan yang membuat hasilnya keliru', kelas: 'bg-rose-50 text-rose-800 ring-rose-100' },
+  benar: {
+    ikon: '✅',
+    judul: 'Kodenya sudah benar',
+    kelas:
+      'bg-emerald-50 text-emerald-800 ring-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-200 dark:ring-emerald-900',
+  },
+  hampir: {
+    ikon: '🟡',
+    judul: 'Hampir benar, masih ada yang perlu diperbaiki',
+    kelas:
+      'bg-amber-50 text-amber-800 ring-amber-100 dark:bg-amber-950/50 dark:text-amber-200 dark:ring-amber-900',
+  },
+  salah: {
+    ikon: '❌',
+    judul: 'Masih ada kesalahan yang membuat hasilnya keliru',
+    kelas:
+      'bg-rose-50 text-rose-800 ring-rose-100 dark:bg-rose-950/50 dark:text-rose-200 dark:ring-rose-900',
+  },
 }
 
 const KEPARAHAN = {
-  kritis: { label: 'Kritis', kelas: 'bg-rose-100 text-rose-700' },
-  penting: { label: 'Penting', kelas: 'bg-amber-100 text-amber-700' },
-  saran: { label: 'Saran', kelas: 'bg-sky-100 text-sky-700' },
+  kritis: {
+    label: 'Kritis',
+    kelas: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',
+  },
+  penting: {
+    label: 'Penting',
+    kelas: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
+  },
+  saran: { label: 'Saran', kelas: 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300' },
 }
 
 const HASIL_RUBRIK = {
-  lolos: { ikon: '✓', kelas: 'text-emerald-600' },
-  gagal: { ikon: '✕', kelas: 'text-rose-600' },
-  tidakRelevan: { ikon: '–', kelas: 'text-slate-300' },
+  lolos: { ikon: '✓', kelas: 'text-emerald-600 dark:text-emerald-400' },
+  gagal: { ikon: '✕', kelas: 'text-rose-600 dark:text-rose-400' },
+  tidakRelevan: { ikon: '–', kelas: 'text-slate-300 dark:text-slate-600' },
 }
 
 export default function AnalysisResult({ hasil, mode }) {
@@ -37,7 +58,7 @@ export default function AnalysisResult({ hasil, mode }) {
       </div>
 
       <Kartu judul="Kode ini sebenarnya melakukan apa">
-        <p className="text-sm leading-relaxed text-slate-700">{hasil.ringkasan}</p>
+        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">{hasil.ringkasan}</p>
       </Kartu>
 
       <Skor skor={hasil.skor} />
@@ -52,7 +73,7 @@ export default function AnalysisResult({ hasil, mode }) {
         </Kartu>
       ) : (
         <Kartu judul="Yang perlu diperbaiki">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             Tidak ditemukan masalah berarti. Kerja bagus! 🎉
           </p>
         </Kartu>
@@ -79,8 +100,12 @@ export default function AnalysisResult({ hasil, mode }) {
                     {h.ikon}
                   </span>
                   <div className="min-w-0">
-                    <p className="text-xs font-medium text-slate-700">{p.poin}</p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{p.catatan}</p>
+                    <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                      {p.poin}
+                    </p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                      {p.catatan}
+                    </p>
                   </div>
                 </li>
               )
@@ -93,7 +118,10 @@ export default function AnalysisResult({ hasil, mode }) {
         <Kartu judul="Sebaiknya kamu pelajari berikutnya">
           <ul className="flex flex-col gap-2">
             {hasil.langkahBerikutnya.map((l, i) => (
-              <li key={i} className="flex gap-2 text-sm leading-relaxed text-slate-700">
+              <li
+                key={i}
+                className="flex gap-2 text-sm leading-relaxed text-slate-700 dark:text-slate-300"
+              >
                 <span className="text-indigo-400" aria-hidden="true">
                   →
                 </span>
@@ -111,19 +139,21 @@ function Temuan({ temuan }) {
   const k = KEPARAHAN[temuan.keparahan] || KEPARAHAN.saran
 
   return (
-    <article className="rounded-lg border border-slate-200 p-3.5">
+    <article className="rounded-lg border border-slate-200 p-3.5 dark:border-slate-800">
       <div className="flex flex-wrap items-center gap-2">
         <span className={`rounded-md px-2 py-0.5 text-[11px] font-semibold ${k.kelas}`}>
           {k.label}
         </span>
         {temuan.baris > 0 && (
-          <span className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-[11px] text-slate-600">
+          <span className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-[11px] text-slate-600 dark:bg-slate-800 dark:text-slate-300">
             baris {temuan.baris}
           </span>
         )}
       </div>
 
-      <h4 className="mt-2 text-sm font-semibold text-slate-900">{temuan.judul}</h4>
+      <h4 className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">
+        {temuan.judul}
+      </h4>
       <p className="mt-1.5 text-sm leading-relaxed text-slate-700">{temuan.penjelasan}</p>
 
       {temuan.contohGagal && (
@@ -140,7 +170,9 @@ function Temuan({ temuan }) {
 
       {temuan.perbaikan && (
         <div className="mt-2.5">
-          <p className="mb-1 text-[11px] font-medium text-slate-500">Contoh perbaikan</p>
+          <p className="mb-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Contoh perbaikan
+          </p>
           <pre className="overflow-x-auto rounded-lg bg-slate-900 px-3 py-2.5 font-mono text-xs leading-relaxed text-slate-100">
             {temuan.perbaikan}
           </pre>
@@ -152,8 +184,9 @@ function Temuan({ temuan }) {
 
 function Bagian({ judul, nada, children }) {
   const kelas = {
-    rose: 'border-rose-200 bg-rose-50/60 text-rose-900',
-    indigo: 'border-indigo-200 bg-indigo-50/60 text-indigo-900',
+    rose: 'border-rose-200 bg-rose-50/60 text-rose-900 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200',
+    indigo:
+      'border-indigo-200 bg-indigo-50/60 text-indigo-900 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-200',
   }[nada]
 
   return (
@@ -178,8 +211,10 @@ function Skor({ skor }) {
       <div className="flex flex-col gap-2.5">
         {baris.map((b) => (
           <div key={b.label} className="flex items-center gap-3">
-            <span className="w-24 shrink-0 text-xs text-slate-600">{b.label}</span>
-            <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+            <span className="w-24 shrink-0 text-xs text-slate-600 dark:text-slate-400">
+              {b.label}
+            </span>
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
               <div
                 className={`h-full rounded-full transition-all ${
                   b.nilai >= 70 ? 'bg-emerald-500' : b.nilai >= 40 ? 'bg-amber-500' : 'bg-rose-500'
@@ -187,7 +222,7 @@ function Skor({ skor }) {
                 style={{ width: `${Math.max(0, Math.min(100, b.nilai))}%` }}
               />
             </div>
-            <span className="w-8 shrink-0 text-right font-mono text-xs text-slate-500">
+            <span className="w-8 shrink-0 text-right font-mono text-xs text-slate-500 dark:text-slate-400">
               {b.nilai}
             </span>
           </div>
@@ -199,16 +234,16 @@ function Skor({ skor }) {
 
 function Lencana({ label, nilai }) {
   return (
-    <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs text-slate-600">
-      {label}: <b className="font-mono text-slate-800">{nilai}</b>
+    <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+      {label}: <b className="font-mono text-slate-800 dark:text-slate-100">{nilai}</b>
     </span>
   )
 }
 
 function Kartu({ judul, children }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4">
-      <h3 className="mb-2.5 text-sm font-semibold text-slate-900">{judul}</h3>
+    <section className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+      <h3 className="mb-2.5 text-sm font-semibold text-slate-900 dark:text-slate-100">{judul}</h3>
       {children}
     </section>
   )
